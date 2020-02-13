@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_easy/blocs/stock_bloc_details.dart';
@@ -8,6 +7,7 @@ import 'package:stock_easy/ui/providers/inherit_widget_stock_details_bloc_provid
 import 'package:stock_easy/ui/providers/inherit_widget_stock_provider.dart';
 import 'package:stock_easy/ui/widgets/custom_radio_button.dart';
 import 'package:stock_easy/ui/widgets/simple_time_series_chart.dart';
+import 'package:stock_easy/utils/widget_util.dart';
 
 class StockDetailsPage extends StatefulWidget {
   final Stock stock;
@@ -22,17 +22,21 @@ class StockDetailsPage extends StatefulWidget {
 }
 
 class StockDetailsPageState extends State<StockDetailsPage> {
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     print('build');
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: AppBarTitle(),
       ),
       body: Container(
         child: StockWidgetProvider(
           stock: widget.stock,
-          child: StockDetailsBlocProvider(child: StockDetailsBody()),
+          child:
+              StockDetailsBlocProvider(child: StockDetailsBody(_scaffoldKey)),
         ),
       ),
     );
@@ -55,6 +59,9 @@ class AppBarTitle extends StatelessWidget {
 
 class StockDetailsBody extends StatefulWidget {
   final selectedDaysNotifier = new ValueNotifier(3);
+  final GlobalKey<ScaffoldState> _scaffoldKey;
+
+  StockDetailsBody(this._scaffoldKey);
 
   @override
   _StockDetailsBodyState createState() => _StockDetailsBodyState();
@@ -65,7 +72,6 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
   var lowHigh = true;
   final listDays = generateDaysList();
   ValueListenable<int> selectedDaysListenable;
-
   var stockProvider;
 
   @override
@@ -84,7 +90,7 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
   void didChangeDependencies() {
     stockProvider = StockWidgetProvider.of(context);
     stockDetailsBloc = StockDetailsBlocProvider.of(context);
-    stockDetailsBloc.fetchDetailsBySymbol(stockProvider.stock.symbol);
+    fetchDetails();
     super.didChangeDependencies();
   }
 
@@ -123,6 +129,13 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
                                     onChanged: (value) {
                                       setState(() {
                                         lowHigh = value;
+                                        widget._scaffoldKey.currentState
+                                            .hideCurrentSnackBar(
+                                                reason: SnackBarClosedReason
+                                                    .remove);
+                                        widget._scaffoldKey.currentState
+                                            .showSnackBar(WidgetUtil.getSnackbar(
+                                                'Changed to ${value ? 'High' : 'Low'}'));
                                       });
                                     },
                                   ),
@@ -138,7 +151,9 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
                           ),
                         );
                       } else if (itemSnapShot.hasError) {
-                        return Text(itemSnapShot.error.toString());
+                        return WidgetUtil.error(
+                            context, itemSnapShot.error.toString(),
+                            onRetry: () => fetchDetails());
                       } else {
                         return CircularProgressIndicator();
                       }
@@ -156,6 +171,10 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
   Widget buildChart(Stock stock, DailyStockItem data, bool lowHigh) {
     return SimpleTimeSeriesChart.create(data, selectedDaysListenable.value,
         lowHigh, stock.name, 'Amount in ${stock.currency}', 'Date');
+  }
+
+  void fetchDetails() {
+    stockDetailsBloc.fetchDetailsBySymbol(stockProvider.stock.symbol);
   }
 }
 

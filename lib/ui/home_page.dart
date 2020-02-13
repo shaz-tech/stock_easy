@@ -131,7 +131,8 @@ class HomePageState extends State<HomePage> {
             if (snapshot.hasData) {
               return buildStockList(snapshot);
             } else if (snapshot.hasError) {
-              return showStockListError(snapshot);
+              return WidgetUtil.error(context, snapshot.error.toString(),
+                  onRetry: () => searchKeyword());
             } else {
               return Center(
                 child: CircularProgressIndicator(),
@@ -169,9 +170,9 @@ class HomePageState extends State<HomePage> {
                   direction: Axis.horizontal,
                   children: <Widget>[
                     Text(snapshot.data.bestMatchesStocks[index].type),
-                    WidgetUtill.circularDot(4.0, 8.0),
+                    WidgetUtil.circularDot(4.0, 8.0),
                     Text(snapshot.data.bestMatchesStocks[index].region),
-                    WidgetUtill.circularDot(4.0, 8.0),
+                    WidgetUtil.circularDot(4.0, 8.0),
                     Text(snapshot.data.bestMatchesStocks[index].symbol),
                   ],
                 ),
@@ -181,32 +182,6 @@ class HomePageState extends State<HomePage> {
         );
       },
     );
-  }
-
-  Widget showStockListError(AsyncSnapshot<MatchesStocks> snapshot) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          snapshot.error.toString(),
-          style: TextStyle(color: Colors.grey, fontSize: 18.0),
-        ),
-        SizedBox(
-          height: 16.0,
-        ),
-        RaisedButton(
-            onPressed: () => searchKeyword(),
-            color: Theme.of(context).accentColor,
-            child: Text(
-              'Retry',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ))
-      ],
-    ));
   }
 
   void searchKeyword() {

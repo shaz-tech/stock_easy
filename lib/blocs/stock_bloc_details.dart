@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
 import 'package:stock_easy/models/stock_details_daily_item.dart';
-import 'package:stock_easy/resources/stock_repository.dart';
+import 'package:stock_easy/resources/reposiroties/stock_repository.dart';
 
 class StockDetailsBloc {
   final _stockRepository = StockRepository();

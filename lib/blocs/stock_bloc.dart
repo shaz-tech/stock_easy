@@ -1,6 +1,6 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:stock_easy/models/best_matches_stock_item.dart';
-import 'package:stock_easy/resources/stock_repository.dart';
+import 'package:stock_easy/resources/reposiroties/stock_repository.dart';
 
 class StockBloc {
   final stockRepository = StockRepository();
@@ -14,7 +14,7 @@ class StockBloc {
     if (model != null && model.bestMatchesStocks.length > 0)
       _stockSearchFetcher.sink.add(model);
     else
-      _stockSearchFetcher.sink.addError('No result found');
+      _stockSearchFetcher.sink.addError('No result found. Please try after sometime');
   }
 
   dispose() {
