@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_easy/blocs/stock_bloc.dart';
+import 'package:stock_easy/blocs/stock_bloc_details.dart';
 import 'package:stock_easy/models/best_matches_stock_item.dart';
 import 'package:stock_easy/models/stock_details_daily_item.dart';
+import 'package:stock_easy/ui/providers/inherit_widget_stock_details_bloc_provider.dart';
 import 'package:stock_easy/ui/providers/inherit_widget_stock_provider.dart';
 import 'package:stock_easy/ui/widgets/custom_radio_button.dart';
 import 'package:stock_easy/ui/widgets/simple_time_series_chart.dart';
@@ -31,7 +32,7 @@ class StockDetailsPageState extends State<StockDetailsPage> {
       body: Container(
         child: StockWidgetProvider(
           stock: widget.stock,
-          child: StockDetailsBody(),
+          child: StockDetailsBlocProvider(child: StockDetailsBody()),
         ),
       ),
     );
@@ -60,11 +61,18 @@ class StockDetailsBody extends StatefulWidget {
 }
 
 class _StockDetailsBodyState extends State<StockDetailsBody> {
+  StockDetailsBloc stockDetailsBloc;
   var lowHigh = true;
   final listDays = generateDaysList();
   ValueListenable<int> selectedDaysListenable;
 
   var stockProvider;
+
+  @override
+  void dispose() {
+    stockDetailsBloc.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -75,7 +83,8 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
   @override
   void didChangeDependencies() {
     stockProvider = StockWidgetProvider.of(context);
-    stockBloc.dailyDetails(stockProvider.stock.symbol);
+    stockDetailsBloc = StockDetailsBlocProvider.of(context);
+    stockDetailsBloc.fetchDetailsBySymbol(stockProvider.stock.symbol);
     super.didChangeDependencies();
   }
 
@@ -86,44 +95,54 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
         valueListenable: widget.selectedDaysNotifier,
         builder: (BuildContext context, int value, Widget child) {
           return StreamBuilder(
-            stream: stockBloc.stockDaily,
-            builder: (context, AsyncSnapshot<DailyStockItem> snapshot) {
-              if (snapshot.hasData) {
-                return Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                          height: MediaQuery.of(context).size.height - 200.0,
-                          child: buildChart(
-                              stockProvider.stock, snapshot.data, lowHigh)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text('Low'),
-                          Switch(
-                            value: lowHigh,
-                            onChanged: (value) {
-                              setState(() {
-                                lowHigh = value;
-                              });
-                            },
+            stream: stockDetailsBloc.stockDetails,
+            builder: (context, AsyncSnapshot<Future<DailyStockItem>> snapShot) {
+              if (snapShot.hasData) {
+                return FutureBuilder(
+                    future: snapShot.data,
+                    builder:
+                        (context, AsyncSnapshot<DailyStockItem> itemSnapShot) {
+                      if (itemSnapShot.hasData) {
+                        return Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  height: MediaQuery.of(context).size.height -
+                                      200.0,
+                                  child: buildChart(stockProvider.stock,
+                                      itemSnapShot.data, lowHigh)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text('Low'),
+                                  Switch(
+                                    value: lowHigh,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        lowHigh = value;
+                                      });
+                                    },
+                                  ),
+                                  Text('High'),
+                                ],
+                              ),
+                              Container(
+                                height: 40.0,
+                                child: new CustomRadio.create(
+                                    listDays, selectedDaysListenable),
+                              )
+                            ],
                           ),
-                          Text('High'),
-                        ],
-                      ),
-                      Container(
-                        height: 40.0,
-                        child: new CustomRadio.create(
-                            listDays, selectedDaysListenable),
-                      )
-                    ],
-                  ),
-                );
-              } else if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
+                        );
+                      } else if (itemSnapShot.hasError) {
+                        return Text(itemSnapShot.error.toString());
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    });
               } else {
                 return CircularProgressIndicator();
               }
