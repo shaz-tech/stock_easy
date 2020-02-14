@@ -6,7 +6,6 @@ import 'package:stock_easy/resources/reposiroties/stock_repository.dart';
 
 class StockDetailsBloc {
   final _stockRepository = StockRepository();
-
   final _stockSymbol = PublishSubject<String>();
   final _stockDetails = BehaviorSubject<Future<DailyStockItem>>();
 

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio_http_cache/dio_http_cache.dart';
-import 'package:http/http.dart' show Client;
 import 'package:stock_easy/models/stock_details_daily_item.dart';
 import 'package:stock_easy/resources/api_constants.dart';
 
@@ -10,7 +9,7 @@ import '../../models/best_matches_stock_item.dart';
 import 'dio_helper.dart';
 
 class StockApiProvider {
-  final Client client = Client();
+  //final Client client = Client();
 
   Future<MatchesStocks> search(String keyword) {
     return DioHelper.getDio()

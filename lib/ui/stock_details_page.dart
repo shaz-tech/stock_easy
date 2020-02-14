@@ -82,8 +82,8 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
 
   @override
   void initState() {
-    selectedDaysListenable = widget.selectedDaysNotifier;
     super.initState();
+    selectedDaysListenable = widget.selectedDaysNotifier;
   }
 
   @override

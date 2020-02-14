@@ -22,6 +22,7 @@ class CustomRadio extends StatefulWidget {
 class CustomRadioState extends State<CustomRadio> {
   @override
   void initState() {
+    super.initState();
     int index = widget._list
         .indexWhere((r) => r.data == widget.selectedDayNotifier.value);
     if (index >= 0) {
@@ -30,7 +31,6 @@ class CustomRadioState extends State<CustomRadio> {
         widget._list[index].isSelected = true;
       });
     }
-    super.initState();
   }
 
   @override

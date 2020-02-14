@@ -16,7 +16,12 @@ class DioHelper {
           contentType: "application/x-www-form-urlencoded; charset=utf-8"))
 //        ..httpClientAdapter = _getHttpClientAdapter()
         ..interceptors.add(getCacheManager().interceptor)
-        ..interceptors.add(LogInterceptor(responseBody: true));
+        ..interceptors.add(
+          LogInterceptor(
+            responseBody: true,
+            responseHeader: true,
+          ),
+        );
     }
     return _dio;
   }
