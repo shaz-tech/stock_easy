@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:stock_easy/blocs/stock_bloc_details.dart';
 import 'package:stock_easy/models/best_matches_stock_item.dart';
 import 'package:stock_easy/models/stock_details_daily_item.dart';
@@ -23,6 +24,16 @@ class StockDetailsPage extends StatefulWidget {
 
 class StockDetailsPageState extends State<StockDetailsPage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      final size = MediaQuery.of(context).size;
+      ScreenUtil.init(context,
+          width: size.width, height: size.height, allowFontScaling: true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +60,7 @@ class AppBarTitle extends StatelessWidget {
     return Text(
       'Details',
       style: TextStyle(
-        fontSize: 22.0,
+        fontSize: ScreenUtil().setSp(22.0),
         fontWeight: FontWeight.bold,
         color: Colors.white,
       ),
@@ -110,14 +121,14 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
                         (context, AsyncSnapshot<DailyStockItem> itemSnapShot) {
                       if (itemSnapShot.hasData) {
                         return Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(ScreenUtil().setWidth(8.0)),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Container(
                                   height: MediaQuery.of(context).size.height -
-                                      200.0,
+                                      ScreenUtil().setHeight(200.0),
                                   child: buildChart(stockProvider.stock,
                                       itemSnapShot.data, lowHigh)),
                               Row(
@@ -143,7 +154,7 @@ class _StockDetailsBodyState extends State<StockDetailsBody> {
                                 ],
                               ),
                               Container(
-                                height: 40.0,
+                                height: ScreenUtil().setHeight(40.0),
                                 child: new CustomRadio.create(
                                     listDays, selectedDaysListenable),
                               )

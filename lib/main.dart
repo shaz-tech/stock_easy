@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stock_easy/ui/home_page.dart';
+import 'package:stock_easy/ui/splash_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         accentColor: Colors.deepOrangeAccent,
       ),
-      home: HomePage(),
+      home: SplashPage(),
     );
   }
 }

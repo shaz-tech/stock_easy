@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WidgetUtil {
   static Widget circularDot(double size, double margin) => Container(
@@ -22,15 +23,16 @@ class WidgetUtil {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(16.0),
-          height: 200.0,
+          padding: EdgeInsets.all(ScreenUtil().setWidth(16.0)),
+          height: ScreenUtil().setHeight(200.0),
           child: Text(
             errorMessage,
-            style: TextStyle(color: Colors.grey, fontSize: 18.0),
+            style: TextStyle(
+                color: Colors.grey, fontSize: ScreenUtil().setSp(16.0)),
           ),
         ),
         SizedBox(
-          height: 16.0,
+          height: ScreenUtil().setHeight(16.0),
         ),
         RaisedButton(
           onPressed: () => onRetry(),

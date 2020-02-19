@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomRadio extends StatefulWidget {
   final List<RadioModel> _list;
@@ -23,6 +24,13 @@ class CustomRadioState extends State<CustomRadio> {
   @override
   void initState() {
     super.initState();
+
+    Future.delayed(Duration.zero, () {
+      final size = MediaQuery.of(context).size;
+      ScreenUtil.init(context,
+          width: size.width, height: size.height, allowFontScaling: true);
+    });
+
     int index = widget._list
         .indexWhere((r) => r.data == widget.selectedDayNotifier.value);
     if (index >= 0) {
@@ -40,7 +48,7 @@ class CustomRadioState extends State<CustomRadio> {
       itemCount: widget._list.length,
       itemBuilder: (BuildContext context, int index) {
         return Container(
-          margin: new EdgeInsets.all(4.0),
+          margin: new EdgeInsets.all(ScreenUtil().setWidth(4.0)),
           child: new InkWell(
             splashColor: Theme.of(context).accentColor,
             onTap: () {
@@ -70,8 +78,8 @@ class RadioItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           new Container(
-            height: 32.0,
-            width: 72.0,
+            height: ScreenUtil().setHeight(32.0),
+            width: ScreenUtil().setWidth(72.0),
             child: new Center(
               child: new Text(_item.text,
                   style: new TextStyle(
@@ -84,7 +92,7 @@ class RadioItem extends StatelessWidget {
                   ? Theme.of(context).accentColor
                   : Colors.transparent,
               border: new Border.all(
-                  width: 1.0,
+                  width: ScreenUtil().setWidth(1.0),
                   color: _item.isSelected
                       ? Theme.of(context).accentColor
                       : Colors.grey),
