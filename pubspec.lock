@@ -15,6 +15,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.39.4"
+  ansicolor:
+    dependency: transitive
+    description:
+      name: ansicolor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   archive:
     dependency: transitive
     description:
@@ -133,7 +140,7 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.8"
+    version: "3.0.9"
   dio_http_cache:
     dependency: "direct main"
     description:
@@ -155,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.3"
+  flogger:
+    dependency: "direct main"
+    description:
+      path: flogger
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -269,7 +283,7 @@ packages:
       name: package_config
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.9.1"
   path:
     dependency: transitive
     description:
@@ -330,7 +344,7 @@ packages:
       name: source_gen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4+7"
+    version: "0.9.5"
   source_span:
     dependency: transitive
     description:
@@ -344,7 +358,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   stack_trace:
     dependency: transitive
     description:
@@ -423,5 +437,5 @@ packages:
     source: hosted
     version: "2.2.0"
 sdks:
-  dart: ">=2.6.0 <3.0.0"
+  dart: ">=2.7.0 <3.0.0"
   flutter: ">=1.10.1 <2.0.0"
